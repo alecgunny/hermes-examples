@@ -1,0 +1,3 @@
+[submodule "hermes"]
+	path = hermes
+	url = git@github.com:ML4GW/hermes.git
