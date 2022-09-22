@@ -1,5 +1,6 @@
-*.csv
 model-repo/
 .ipynb_checkpoints
 **/__pycache__/
 *.log
+metrics/
+*.csv
