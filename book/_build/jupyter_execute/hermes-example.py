@@ -1,15 +1,12 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# # Inference-as-a-Service with `hermes`
-# This is intended to serve as a brief overview as to how the `hermes` libraries might be used to accelerate an inference deployment as-a-service using NVIDIA's [Triton inference server](https://developer.nvidia.com/nvidia-triton-inference-server). We'll start by showing what a vanilla, suboptimal deployment might look like to introduce all the relevant concepts, then make things slightly more complex to show how to analyze and identify the bottlenecks in a deployment and remove them.
-# 
-# As you can see from the `pyproject.toml`, all of the relevant `hermes` libraries are currently installed in this environment. In a production setting, you might consider breaking these up to keep environments more lightweight. For example, `hermes.quiver` might be installed in your training environment to export at train time, or might be installed in a dedicated export deployment if it involves more complex dependencies like TensorRT. Meanwhile, your inference environment might have `hermes.aeriel` and `hermes.stillwater` installed for deploying and monitoring an inference service. This is not critical to the discussion here, but worth bringing up to point out that the `hermes` libraries are not a monolith and are intended to be lightweight and composable.
-# 
 # ## Overview
 # In this example, we'll begin by building a neural network, then exporting it from memory to disk in a format that Triton can use for serving it for inference. Obviously, in practice we'd like to train this network on some data between these steps, but since we're more interested here in the inference side, we'll pretend this training has been done elsewhere. For the sake of simplicity, we'll build a 1D convolutional network with a single output (which might be used for e.g. for binary classification).
 # 
 # Once our model has been properly exported, we'll spin up a Triton inference service which will load the model and expose it for inference via gRPC requests. We'll then build some dummy inference data and iterate through it to build requests to send to our inference service, aggregating its responses into a timeseries of network outputs.
+# 
+# As we'll see, achieving higher levels of data throughput (which we'll measure in units of seconds of data per second, or s' / s) for higher frequency **inference sampling rates**, or the rate at which we sample windows from our timeseries, requires making some adjustments to this vanilla implementation to shift the bottleneck to the GPU and get the most compute utilization possible out of it. `hermes` helps to make those adjustments simple, and to achieve greater scale once you've made them.
 # 
 # We'll start with our imports. From `hermes`, we'll be using
 # - `hermes.quiver` to handle exporting our model to a format usable by Triton
@@ -35,8 +32,7 @@ from hermes.aeriel.serve import serve
 from hermes.stillwater import ServerMonitor
 
 # couple cheap local utilities
-from src import utils
-from src import plotting
+from src import utils, plotting
 
 logger = utils.get_logger()
 

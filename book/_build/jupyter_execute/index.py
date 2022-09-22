@@ -1,0 +1,7 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# # Inference-as-a-Service with `hermes`
+# This is intended to serve as a brief overview as to how the `hermes` libraries might be used to accelerate an inference deployment as-a-service using NVIDIA's [Triton inference server](https://developer.nvidia.com/nvidia-triton-inference-server). We'll start by showing what a vanilla, suboptimal deployment might look like to introduce all the relevant concepts, then slowly make things more complex to show how to analyze and identify the bottlenecks in a deployment and remove them.
+# 
+# As you can see from the [`pyproject.toml`](https://github.com/alecgunny/hermes-examples/blob/main/pyproject.toml), all of the relevant `hermes` libraries are currently installed in this environment. In a production setting, you might consider breaking these up to keep environments more lightweight. For example, `hermes.quiver` might be installed in your training environment to export at train time, or might be installed in a dedicated export deployment if it involves more complex dependencies like TensorRT. Meanwhile, your inference environment might have `hermes.aeriel` and `hermes.stillwater` installed for deploying and monitoring an inference service. This is not critical to the discussion here, but worth bringing up to point out that the `hermes` libraries are not a monolith and are intended to be lightweight and composable.
