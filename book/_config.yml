@@ -1,0 +1,7 @@
+title: hermes Examples
+author: Alec Gunny
+execute:
+  timeout: -1
+sphinx:
+  config:
+    execution_show_tb: True

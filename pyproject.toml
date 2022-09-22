@@ -17,14 +17,18 @@ python = ">=3.8,<3.11"
 # notebook-specific dependencies, kept separate for
 # clarity of the "real" dependency chain
 jupyter = {version = "^1.0", optional = true}
-ipywidgets = {version = "^8.0", optional = true}
+ipywidgets = {version = ">=7.0,<8.0", optional = true}
 bokeh = {version = "^2.4", optional = true}
 pandas = {version = "^1.4", optional = true}
 rich = {version = "^12.5", optional = true}
 ratelimiter = {version = "^1.2", optional = true}
 
+# for publishing
+jupyter-book = {version = "^0.13", optional = true}
+
 [tool.poetry.extras]
 notebook = ["jupyter", "ipywidgets", "bokeh", "rich", "pandas", "ratelimiter"]
+publish = ["jupyter-book"]
 
 [build-system]
 requires = ["poetry-core"]
