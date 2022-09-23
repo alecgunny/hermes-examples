@@ -1,5 +1,5 @@
 format: jb-book
 root: index
 chapters:
-- file: hermes-hello-world
+- file: hermes-example
 
